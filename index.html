@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number System Converter - Universe Edition</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            background: #0a0a0a;
+        }
+        
+        /* Animated Universe Background */
+        .universe {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, #120458 0%, #000000 50%, #000000 100%);
+            z-index: -3;
+            animation: universeShift 20s ease-in-out infinite;
+        }
+        
+        @keyframes universeShift {
+            0%, 100% { background: radial-gradient(circle at 20% 50%, #120458 0%, #000000 50%, #000000 100%); }
+            25% { background: radial-gradient(circle at 80% 20%, #4a0e4e 0%, #000000 50%, #000000 100%); }
+            50% { background: radial-gradient(circle at 50% 80%, #0f3460 0%, #000000 50%, #000000 100%); }
+            75% { background: radial-gradient(circle at 10% 80%, #2d1b69 0%, #000000 50%, #000000 100%); }
+        }
+        
+        /* Stars */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+        }
+        
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        /* Nebula clouds */
+        .nebula {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(40px);
+            z-index: -1;
+            animation: float 15s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, -20px) scale(1.1); }
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 30px;
+            font-size: 3em;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
+            to { text-shadow: 0 0 30px rgba(255, 255, 255, 0.8), 0 0 40px rgba(102, 126, 234, 0.5); }
+        }
+        
+        .converter-section {
+            margin-bottom: 25px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .converter-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .converter-section:hover::before {
+            left: 100%;
+        }
+        
+        .converter-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+        
+        .section-title {
+            font-size: 1.4em;
+            color: #fff;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+        
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        label {
+            font-weight: 500;
+            color: #fff;
+            min-width: 80px;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+        }
+        
+        input[type="text"], input[type="number"] {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+        
+        input[type="text"]:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        select {
+            padding: 15px 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+        }
+        
+        select option {
+            background: #2a2a2a;
+            color: #fff;
+        }
+        
+        button {
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        button:hover::before {
+            left: 100%;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(-1px);
+        }
+        
+        .result {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 15px;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            animation: resultGlow 1s ease-in-out;
+        }
+        
+        @keyframes resultGlow {
+            0% { box-shadow: 0 0 5px rgba(102, 126, 234, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.6); }
+            100% { box-shadow: 0 0 5px rgba(102, 126, 234, 0.3); }
+        }
+        
+        .error {
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+            border-color: #ff6b6b;
+        }
+        
+        .info-section {
+            background: rgba(52, 152, 219, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 20px;
+            margin-top: 30px;
+            border: 1px solid rgba(52, 152, 219, 0.3);
+        }
+        
+        .info-title {
+            font-size: 1.3em;
+            color: #fff;
+            margin-bottom: 15px;
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+        
+        .info-text {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.8;
+            font-size: 1.1em;
+        }
+        
+        /* New Features Styles */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .history-section {
+            max-height: 300px;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .history-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-family: 'Courier New', monospace;
+            color: #fff;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+        }
+        
+        .step-by-step {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+        }
+        
+        .binary-calculator {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .bit-button {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .bit-button.active {
+            background: #667eea;
+            border-color: #667eea;
+            box-shadow: 0 0 15px rgba(102, 126, 234, 0.5);
+        }
+        
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            padding: 10px 20px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+        
+        @media (max-width: 768px) {
+            .input-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            label {
+                min-width: auto;
+            }
+            
+            h1 {
+                font-size: 2.2em;
+            }
+            
+            .container {
+                margin: 10px;
+                padding: 20px;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.6);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(102, 126, 234, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <div class="universe"></div>
+    <div class="stars"></div>
+    
+    <div class="theme-toggle" onclick="toggleAnimation()">
+        🌌 Toggle Animation
+    </div>
+    
+    <div class="container">
+        <h1>🌌 Universal Number Converter</h1>
+        
+        <!-- Enhanced Universal Converter -->
+        <div class="converter-section">
+            <div class="section-title">🔄 Universal Converter</div>
+            <div class="input-group">
+                <label for="inputNumber">Number:</label>
+                <input type="text" id="inputNumber" placeholder="Enter number">
+                <select id="fromBase">
+                    <option value="10">Decimal (Base 10)</option>
+                    <option value="2">Binary (Base 2)</option>
+                    <option value="8">Octal (Base 8)</option>
+                    <option value="16">Hexadecimal (Base 16)</option>
+                    <option value="3">Ternary (Base 3)</option>
+                    <option value="5">Base 5</option>
+                    <option value="7">Base 7</option>
+                    <option value="12">Duodecimal (Base 12)</option>
+                    <option value="36">Base 36</option>
+                </select>
+                <span style="color: #fff;">to</span>
+                <select id="toBase">
+                    <option value="2">Binary (Base 2)</option>
+                    <option value="10" selected>Decimal (Base 10)</option>
+                    <option value="8">Octal (Base 8)</option>
+                    <option value="16">Hexadecimal (Base 16)</option>
+                    <option value="3">Ternary (Base 3)</option>
+                    <option value="5">Base 5</option>
+                    <option value="7">Base 7</option>
+                    <option value="12">Duodecimal (Base 12)</option>
+                    <option value="36">Base 36</option>
+                </select>
+                <button onclick="convertNumber()">🚀 Convert</button>
+            </div>
+            <div id="result" class="result">Enter a number and select bases to convert</div>
+            <div id="stepByStep" class="step-by-step" style="display: none;"></div>
+        </div>
+        
+        <div class="feature-grid">
+            <!-- All Conversions -->
+            <div class="converter-section">
+                <div class="section-title">🌟 Show All Conversions</div>
+                <div class="input-group">
+                    <label for="allInputNumber">Number:</label>
+                    <input type="text" id="allInputNumber" placeholder="Enter number">
+                    <select id="allFromBase">
+                        <option value="10">Decimal</option>
+                        <option value="2">Binary</option>
+                        <option value="8">Octal</option>
+                        <option value="16">Hexadecimal</option>
+                    </select>
+                    <button onclick="showAllConversions()">✨ Show All</button>
+                </div>
+                <div id="allResults" class="result">Enter a number to see all conversions</div>
+            </div>
+            
+            <!-- Binary Calculator -->
+            <div class="converter-section">
+                <div class="section-title">🔢 Interactive Binary Calculator</div>
+                <div>Click bits to build binary number:</div>
+                <div class="binary-calculator" id="binaryCalculator">
+                    <!-- Generated by JavaScript -->
+                </div>
+                <div id="binaryResult" class="result">Binary: 0000 0000 = Decimal: 0</div>
+            </div>
+        </div>
+        
+        <!-- Math Operations -->
+        <div class="converter-section">
+            <div class="section-title">🧮 Number System Arithmetic</div>
+            <div class="input-group">
+                <input type="text" id="mathNum1" placeholder="First number">
+                <select id="mathBase1">
+                    <option value="10">Decimal</option>
+                    <option value="2">Binary</option>
+                    <option value="8">Octal</option>
+                    <option value="16">Hexadecimal</option>
+                </select>
+                <select id="mathOperation">
+                    <option value="+">Addition (+)</option>
+                    <option value="-">Subtraction (-)</option>
+                    <option value="*">Multiplication (×)</option>
+                    <option value="/">Division (÷)</option>
+                </select>
+                <input type="text" id="mathNum2" placeholder="Second number">
+                <select id="mathBase2">
+                    <option value="10">Decimal</option>
+                    <option value="2">Binary</option>
+                    <option value="8">Octal</option>
+                    <option value="16">Hexadecimal</option>
+                </select>
+                <button onclick="performMath()">🔥 Calculate</button>
+            </div>
+            <div id="mathResult" class="result">Perform arithmetic operations between different number systems</div>
+        </div>
+        
+        <!-- Random Number Generator -->
+        <div class="converter-section">
+            <div class="section-title">🎲 Random Number Generator</div>
+            <div class="input-group">
+                <label>Range:</label>
+                <input type="number" id="randomMin" placeholder="Min" value="1">
+                <input type="number" id="randomMax" placeholder="Max" value="255">
+                <select id="randomBase">
+                    <option value="10">Decimal</option>
+                    <option value="2">Binary</option>
+                    <option value="8">Octal</option>
+                    <option value="16">Hexadecimal</option>
+                </select>
+                <button onclick="generateRandom()">🎯 Generate</button>
+            </div>
+            <div id="randomResult" class="result">Generate random numbers in any base</div>
+        </div>
+        
+        <!-- Conversion History -->
+        <div class="converter-section">
+            <div class="section-title">📚 Conversion History</div>
+            <button onclick="clearHistory()" style="float: right; padding: 8px 15px; font-size: 14px;">🗑️ Clear</button>
+            <div id="historyList" class="history-section">
+                <div style="color: rgba(255,255,255,0.6); text-align: center; padding: 20px;">
+                    No conversions yet. Start converting to build your history!
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <div class="info-title">🌌 Number System Universe</div>
+            <div class="info-text">
+                <strong>Binary (Base 2):</strong> The language of computers - uses only 0s and 1s<br>
+                <strong>Octal (Base 8):</strong> Uses digits 0-7, popular in computing<br>
+                <strong>Decimal (Base 10):</strong> Our everyday number system - uses digits 0-9<br>
+                <strong>Hexadecimal (Base 16):</strong> Uses 0-9 and A-F, common in programming<br>
+                <strong>Ternary (Base 3):</strong> Uses digits 0-2, theoretical computer science<br>
+                <strong>Base 36:</strong> Uses 0-9 and A-Z, maximum alphanumeric base
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let conversionHistory = [];
+        let animationEnabled = true;
+        let binaryValue = 0;
+        
+        // Create animated background
+        function createStars() {
+            const starsContainer = document.querySelector('.stars');
+            const numStars = 100;
+            
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        function createNebula() {
+            const colors = [
+                'rgba(102, 126, 234, 0.3)',
+                'rgba(118, 75, 162, 0.3)',
+                'rgba(240, 147, 251, 0.3)',
+                'rgba(255, 107, 107, 0.3)'
+            ];
+            
+            for (let i = 0; i < 5; i++) {
+                const nebula = document.createElement('div');
+                nebula.className = 'nebula';
+                nebula.style.position = 'fixed';
+                nebula.style.left = Math.random() * 100 + '%';
+                nebula.style.top = Math.random() * 100 + '%';
+                nebula.style.width = Math.random() * 200 + 100 + 'px';
+                nebula.style.height = Math.random() * 200 + 100 + 'px';
+                nebula.style.background = colors[Math.floor(Math.random() * colors.length)];
+                nebula.style.animationDelay = Math.random() * 15 + 's';
+                nebula.style.zIndex = '-1';
+                document.body.appendChild(nebula);
+            }
+        }
+        
+        function initializeBinaryCalculator() {
+            const container = document.getElementById('binaryCalculator');
+            container.innerHTML = '';
+            
+            for (let i = 7; i >= 0; i--) {
+                const button = document.createElement('div');
+                button.className = 'bit-button';
+                button.textContent = `2^${i}\n0`;
+                button.onclick = () => toggleBit(i, button);
+                container.appendChild(button);
+            }
+        }
+        
+        function toggleBit(position, button) {
+            const bitValue = Math.pow(2, position);
+            if (binaryValue & bitValue) {
+                binaryValue &= ~bitValue;
+                button.classList.remove('active');
+                button.textContent = `2^${position}\n0`;
+            } else {
+                binaryValue |= bitValue;
+                button.classList.add('active');
+                button.textContent = `2^${position}\n1`;
+            }
+            updateBinaryResult();
+        }
+        
+        function updateBinaryResult() {
+            const binaryString = binaryValue.toString(2).padStart(8, '0');
+            const formattedBinary = binaryString.match(/.{1,4}/g).join(' ');
+            document.getElementById('binaryResult').textContent = 
+                `Binary: ${formattedBinary} = Decimal: ${binaryValue} = Hex: ${binaryValue.toString(16).toUpperCase()}`;
+        }
+        
+        function validateInput(number, base) {
+            if (!number || number.trim() === '') {
+                return { valid: false, error: 'Please enter a number' };
+            }
+            
+            number = number.trim().toUpperCase();
+            
+            const validChars = {
+                2: '01',
+                3: '012',
+                5: '01234',
+                7: '0123456',
+                8: '01234567',
+                10: '0123456789',
+                12: '0123456789AB',
+                16: '0123456789ABCDEF',
+                36: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+            };
+            
+            const chars = validChars[base];
+            
+            for (let char of number) {
+                if (!chars.includes(char)) {
+                    return { 
+                        valid: false, 
+                        error: `Invalid character '${char}' for base ${base}` 
+                    };
+                }
+            }
+            
+            return { valid: true, number: number };
+        }
+        
+        function addToHistory(conversion) {
+            conversionHistory.unshift(conversion);
+            if (conversionHistory.length > 20) {
+                conversionHistory = conversionHistory.slice(0, 20);
+            }
+            updateHistoryDisplay();
+        }
+        
+        function updateHistoryDisplay() {
+            const historyList = document.getElementById('historyList');
+            if (conversionHistory.length === 0) {
+                historyList.innerHTML = '<div style="color: rgba(255,255,255,0.6); text-align: center; padding: 20px;">No conversions yet. Start converting to build your history!</div>';
+                return;
+            }
+            
+            historyList.innerHTML = conversionHistory.map(item => 
+                `<div class="history-item">${item}</div>`
+            ).join('');
+        }
+        
+        function showSteps(number, fromBase, toBase, result) {
+            const stepDiv = document.getElementById('stepByStep');
+            if (fromBase === 10 && toBase !== 10) {
+                // Decimal to other base
+                let steps = `<strong>Step-by-step conversion from Decimal to Base ${toBase}:</strong><br>`;
+                let num = parseInt(number);
+                let divisions = [];
+                let temp = num;
+                
+                while (temp > 0) {
+                    divisions.push(`${temp} ÷ ${toBase} = ${Math.floor(temp / toBase)} remainder ${temp % toBase}`);
+                    temp = Math.floor(temp / toBase);
+                }
+                
+                steps += divisions.join('<br>');
+                steps += `<br><strong>Reading remainders from bottom to top: ${result}</strong>`;
+                stepDiv.innerHTML = steps;
+            } else if (fromBase !== 10 && toBase === 10) {
+                // Other base to decimal
+                let steps = `<strong>Step-by-step conversion from Base ${fromBase} to Decimal:</strong><br>`;
+                let sum = 0;
+                let calculations = [];
+                
+                for (let i = 0; i < number.length; i++) {
+                    const digit = parseInt(number[number.length - 1 - i], fromBase);
+                    const value = digit * Math.pow(fromBase, i);
+                    sum += value;
+                    calculations.push(`${digit} × ${fromBase}^${i} = ${value}`);
+                }
+                
+                steps += calculations.join(' + ') + ` = ${sum}`;
+                stepDiv.innerHTML = steps;
+            } else {
+                stepDiv.innerHTML = `<strong>Conversion:</strong> ${number} (base ${fromBase}) = ${result} (base ${toBase})`;
+            }
+            stepDiv.style.display = 'block';
+        }
+        
+        function convertNumber() {
+            const inputNumber = document.getElementById('inputNumber').value;
+            const fromBase = parseInt(document.getElementById('fromBase').value);
+            const toBase = parseInt(document.getElementById('toBase').value);
+            const resultDiv = document.getElementById('result');
+            
+            const validation = validateInput(inputNumber, fromBase);
+            
+            if (!validation.valid) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = validation.error;
+                return;
+            }
+            
+            try {
+                const decimalValue = parseInt(validation.number, fromBase);
+                
+                if (isNaN(decimalValue)) {
+                    throw new Error('Invalid number format');
+                }
+                
+                let result;
+                if (toBase === 10) {
+                    result = decimalValue.toString();
+                } else {
+                    result = decimalValue.toString(toBase).toUpperCase();
+                }
+                
+                resultDiv.className = 'result';
+                resultDiv.innerHTML = `
+                    <div>
+                        <strong>Result:</strong> ${validation.number} (base ${fromBase}) = <span style="color: #667eea;">${result}</span> (base ${toBase})<br>
+                        <small>Decimal value: ${decimalValue}</small>
+                    </div>
+                `;
+                
+                showSteps(validation.number, fromBase, toBase, result);
+                addToHistory(`${validation.number} (base ${fromBase}) → ${result} (base ${toBase})`);
+                
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Error: Invalid number or conversion failed';
+            }
+        }
+        
+        function showAllConversions() {
+            const inputNumber = document.getElementById('allInputNumber').value;
+            const fromBase = parseInt(document.getElementById('allFromBase').value);
+            const resultDiv = document.getElementById('allResults');
+            
+            const validation = validateInput(inputNumber, fromBase);
+            
+            if (!validation.valid) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = validation.error;
+                return;
+            }
+            
+            try {
+                const decimalValue = parseInt(validation.number, fromBase);
+                
+                if (isNaN(decimalValue)) {
+                    throw new Error('Invalid number format');
+                }
+                
+                const binary = decimalValue.toString(2);
+                const octal = decimalValue.toString(8);
+                const decimal = decimalValue.toString(10);
+                const hexadecimal = decimalValue.toString(16).toUpperCase();
+                const ternary = decimalValue.toString(3);
+                const base36 = decimalValue.toString(36).toUpperCase();
+                
+                resultDiv.className = 'result';
+                resultDiv.innerHTML = `
+                    <div>
+                        <strong>Input:</strong> ${validation.number} (base ${fromBase})<br>
+                        <strong>Binary:</strong> ${binary}<br>
+                        <strong>Ternary:</strong> ${ternary}<br>
+                        <strong>Octal:</strong> ${octal}<br>
+                        <strong>Decimal:</strong> ${decimal}<br>
+                        <strong>Hexadecimal:</strong> ${hexadecimal}<br>
+                        <strong>Base 36:</strong> ${base36}
+                    </div>
+                `;
+                
+                addToHistory(`All conversions for ${validation.number} (base ${fromBase})`);
+                
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Error: Invalid number or conversion failed';
+            }
+        }
+        
+        function performMath() {
+            const num1 = document.getElementById('mathNum1').value;
+            const base1 = parseInt(document.getElementById('mathBase1').value);
+            const operation = document.getElementById('mathOperation').value;
+            const num2 = document.getElementById('mathNum2').value;
+            const base2 = parseInt(document.getElementById('mathBase2').value);
+            const resultDiv = document.getElementById('mathResult');
+            
+            const val1 = validateInput(num1, base1);
+            const val2 = validateInput(num2, base2);
+            
+            if (!val1.valid) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'First number: ' + val1.error;
+                return;
+            }
+            
+            if (!val2.valid) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Second number: ' + val2.error;
+                return;
+            }
+            
+            try {
+                const decimal1 = parseInt(val1.number, base1);
+                const decimal2 = parseInt(val2.number, base2);
+                let result;
+                
+                switch (operation) {
+                    case '+':
+                        result = decimal1 + decimal2;
+                        break;
+                    case '-':
+                        result = decimal1 - decimal2;
+                        break;
+                    case '*':
+                        result = decimal1 * decimal2;
+                        break;
+                    case '/':
+                        result = Math.floor(decimal1 / decimal2);
+                        break;
+                    default:
+                        throw new Error('Invalid operation');
+                }
+                
+                resultDiv.className = 'result';
+                resultDiv.innerHTML = `
+                    <div>
+                        <strong>Calculation:</strong> ${val1.number} (base ${base1}) ${operation} ${val2.number} (base ${base2})<br>
+                        <strong>Result:</strong><br>
+                        Binary: ${result.toString(2)}<br>
+                        Octal: ${result.toString(8)}<br>
+                        Decimal: ${result}<br>
+                        Hexadecimal: ${result.toString(16).toUpperCase()}
+                    </div>
+                `;
+                
+                addToHistory(`${val1.number} (${base1}) ${operation} ${val2.number} (${base2}) = ${result}`);
+                
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Error: Invalid calculation';
+            }
+        }
+        
+        function generateRandom() {
+            const min = parseInt(document.getElementById('randomMin').value) || 1;
+            const max = parseInt(document.getElementById('randomMax').value) || 255;
+            const base = parseInt(document.getElementById('randomBase').value);
+            const resultDiv = document.getElementById('randomResult');
+            
+            if (min >= max) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Minimum must be less than maximum';
+                return;
+            }
+            
+            const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
+            const converted = randomNum.toString(base).toUpperCase();
+            
+            resultDiv.className = 'result';
+            resultDiv.innerHTML = `
+                <div>
+                    <strong>Random Number Generated:</strong><br>
+                    Range: ${min} - ${max}<br>
+                    Decimal: ${randomNum}<br>
+                    Base ${base}: ${converted}<br>
+                    <small>All bases: Bin(${randomNum.toString(2)}) Oct(${randomNum.toString(8)}) Hex(${randomNum.toString(16).toUpperCase()})</small>
+                </div>
+            `;
+            
+            addToHistory(`Random: ${randomNum} → ${converted} (base ${base})`);
+        }
+        
+        function clearHistory() {
+            conversionHistory = [];
+            updateHistoryDisplay();
+        }
+        
+        function toggleAnimation() {
+            animationEnabled = !animationEnabled;
+            const universe = document.querySelector('.universe');
+            const stars = document.querySelectorAll('.star');
+            const nebulas = document.querySelectorAll('.nebula');
+            
+            if (animationEnabled) {
+                universe.style.animation = 'universeShift 20s ease-in-out infinite';
+                stars.forEach(star => star.style.animation = 'twinkle 3s ease-in-out infinite');
+                nebulas.forEach(nebula => nebula.style.animation = 'float 15s ease-in-out infinite');
+            } else {
+                universe.style.animation = 'none';
+                stars.forEach(star => star.style.animation = 'none');
+                nebulas.forEach(nebula => nebula.style.animation = 'none');
+            }
+        }
+        
+        // Add enter key support
+        document.getElementById('inputNumber').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') convertNumber();
+        });
+        
+        document.getElementById('allInputNumber').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') showAllConversions();
+        });
+        
+        document.getElementById('mathNum1').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') performMath();
+        });
+        
+        document.getElementById('mathNum2').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') performMath();
+        });
+        
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            createNebula();
+            initializeBinaryCalculator();
+            updateHistoryDisplay();
+        });
+        
+        // Add some extra keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'h') {
+                e.preventDefault();
+                clearHistory();
+            }
+            if (e.ctrlKey && e.key === 'r') {
+                e.preventDefault();
+                generateRandom();
+            }
+        });
+    </script>
+</body>
+</html>
